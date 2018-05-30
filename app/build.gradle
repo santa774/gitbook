@@ -1,0 +1,75 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.baban.androidgitbook"
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } } // 声明需要使用注解功能(butterknife)
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+    }
+
+    signingConfigs {
+        config {
+            storePassword("Liaoba123")   //你自己的keystore密码
+            storeFile file("liaoba-key.jks")
+            keyPassword 'Liaoba123'   //key密码
+            keyAlias 'liaoba'   //key别名
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+
+    /**
+     * 指定.so文件使用路径
+     */
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            res.srcDirs = ['src/main/res', 'src/main/res/color']
+            assets.srcDirs = ['src/main/assets', 'src/main/assets/']
+        }
+    }
+
+    //为了兼容Android旧版本的httpClient
+    useLibrary 'org.apache.http.legacy'
+}
+
+repositories {
+    flatDir {
+        dirs '../easeui/libs', 'libs' //就是你放aar、jar的目录地址
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation "com.android.support:support-v4:26.1.0"
+    implementation 'com.android.support:design:26.1.0'
+    implementation "com.android.support:recyclerview-v7:26.1.0"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.google.android.gms:play-services-ads:15.0.1'
+    implementation 'com.jakewharton:butterknife:7.0.1'
+    implementation 'cn.bingoogolapple:bga-adapter:1.1.5@aar'
+    implementation 'cn.bingoogolapple:bga-swipeitemlayout:1.0.4@aar'
+    implementation 'me.imid.swipebacklayout.lib:library:1.1.0'
+    implementation 'com.github.hotchemi:permissionsdispatcher:2.4.0'
+    implementation 'org.greenrobot:greendao:3.2.0'
+    annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'
+}
